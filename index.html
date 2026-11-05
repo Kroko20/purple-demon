@@ -1538,6 +1538,56 @@
       text-decoration: underline;
     }
 
+    /* ================= SUCCESS TICKET RECEIPT ================= */
+    .success-ticket-card {
+      background: rgba(20, 12, 36, 0.85);
+      border: 1px solid var(--violet-border);
+      border-radius: var(--radius-md);
+      padding: 16px 18px;
+      margin: 16px 0;
+      text-align: left;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    }
+
+    .ticket-badge {
+      display: inline-block;
+      font-family: var(--font-mono);
+      font-size: 11.5px;
+      font-weight: 700;
+      padding: 4px 12px;
+      border-radius: var(--radius-pill);
+      background: rgba(168, 85, 247, 0.18);
+      color: #C084FC;
+      border: 1px solid rgba(168, 85, 247, 0.45);
+      margin-bottom: 12px;
+    }
+
+    .ticket-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      font-size: 12.5px;
+      padding: 6px 0;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+    }
+
+    .ticket-row:last-child {
+      border-bottom: none;
+    }
+
+    .ticket-label {
+      color: var(--silver-dim);
+      font-weight: 500;
+      white-space: nowrap;
+    }
+
+    .ticket-value {
+      color: #FFFFFF;
+      font-weight: 700;
+      text-align: right;
+      word-break: break-word;
+    }
+
     /* ================= COOKIE BANNER ================= */
     .cookie-banner {
       position: fixed;
@@ -2785,17 +2835,50 @@
       </form>
 
       <!-- Success Notification State (Hidden by default) -->
-      <div id="bookingSuccessBox" style="display: none; text-align: center; padding: 20px 10px;">
-        <div style="width: 56px; height: 56px; border-radius: 50%; background: rgba(16, 185, 129, 0.2); border: 2px solid #10B981; color: #10B981; display: flex; align-items: center; justify-content: center; margin: 0 auto 16px;">
+      <div id="bookingSuccessBox" style="display: none; text-align: center; padding: 10px 0;">
+        <div style="width: 56px; height: 56px; border-radius: 50%; background: rgba(16, 185, 129, 0.2); border: 2px solid #10B981; color: #10B981; display: flex; align-items: center; justify-content: center; margin: 0 auto 14px;">
           <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
         </div>
-        <h4 style="font-size: 18px; font-weight: 800; color: #FFFFFF; margin-bottom: 8px;">ЗАЯВКА УСПЕШНО ПРИНЯТА!</h4>
-        <p style="font-size: 13px; color: var(--silver-dim); line-height: 1.5; margin-bottom: 20px;" id="successMsgText">
-          Мастер студии «Фиолетовый Демон» получил уведомление и свяжется с вами указанным способом.
+        
+        <h4 style="font-size: 19px; font-weight: 800; color: #FFFFFF; margin-bottom: 6px;">ЗАЯВКА УСПЕШНО ПРИНЯТА!</h4>
+        <span class="ticket-badge" id="ticketBadgeCode">#DEMON-742</span>
+        
+        <p style="font-size: 13px; color: var(--silver-dim); line-height: 1.5; margin-bottom: 16px;" id="successDirectActionSub">
+          Мастер студии «Фиолетовый Демон» получил уведомление и свяжется с вами в течение 10 минут.
         </p>
-        <button onclick="closeBookingModal()" class="btn btn-ghost" style="padding: 10px 24px; font-size: 13px;">
-          Понятно, спасибо
-        </button>
+
+        <!-- Ticket Card Details -->
+        <div class="success-ticket-card">
+          <div class="ticket-row">
+            <span class="ticket-label">Клиент:</span>
+            <span class="ticket-value" id="successClientName">—</span>
+          </div>
+          <div class="ticket-row">
+            <span class="ticket-label">Телефон:</span>
+            <span class="ticket-value" id="successClientPhone">—</span>
+          </div>
+          <div class="ticket-row">
+            <span class="ticket-label">Автомобиль:</span>
+            <span class="ticket-value" id="successClientCar">—</span>
+          </div>
+          <div class="ticket-row">
+            <span class="ticket-label">Способ связи:</span>
+            <span class="ticket-value" id="successClientComm" style="color: var(--violet-primary);">—</span>
+          </div>
+          <div class="ticket-row">
+            <span class="ticket-label">Услуга / Расчет:</span>
+            <span class="ticket-value" id="successClientService">—</span>
+          </div>
+        </div>
+
+        <div style="display: flex; flex-direction: column; gap: 10px; margin-top: 18px;">
+          <a id="successDirectActionBtn" href="https://t.me/kroko20" target="_blank" class="btn btn-demon" style="width: 100%;">
+            ✈️ Открыть диалог в Telegram с мастером
+          </a>
+          <button type="button" onclick="closeBookingModal()" class="btn btn-ghost" style="padding: 10px 24px; font-size: 13px;">
+            Закрыть окно
+          </button>
+        </div>
       </div>
 
     </div>
@@ -2873,8 +2956,12 @@
        1. TELEGRAM BOT NOTIFICATION BRIDGE CONFIGURATION
        ========================================================= */
     const TELEGRAM_BRIDGE_CONFIG = {
+      // Чтобы заявки слались ботом автоматически:
+      // 1. Создайте бота в @BotFather в Telegram -> скопируйте botToken
+      // 2. Узнайте свой Chat ID в боте @userinfobot -> вставьте в chatId
+      // 3. Переключите enabled: true
       enabled: true,
-      botToken: "9119203909:AAGah-tDb6BuTo2BJe184z8p3qg4gRHhy3Q",
+      botToken: "9119203909:AAGah-tDb6BuTo2BJe184z8p3qg4gRHhy3Q", 
       chatId: "711330324"
     };
 
@@ -3010,6 +3097,8 @@
       const form = document.getElementById('bookingForm');
       const successBox = document.getElementById('bookingSuccessBox');
 
+      mainTitle.style.display = 'block';
+      subtitle.style.display = 'block';
       form.style.display = 'block';
       successBox.style.display = 'none';
 
@@ -3029,6 +3118,8 @@
       const form = document.getElementById('bookingForm');
       const successBox = document.getElementById('bookingSuccessBox');
 
+      mainTitle.style.display = 'block';
+      subtitle.style.display = 'block';
       form.style.display = 'block';
       successBox.style.display = 'none';
 
@@ -3076,8 +3167,131 @@
       }, { passive: true });
     }
 
-    /* 6. TELEGRAM LEAD SUBMISSION DISPATCHER */
-    async function handleLeadSubmit(e) {
+    /* =========================================================
+       6. RUSSIAN PHONE INPUT MASK (+7 (XXX) XXX-XX-XX)
+       ========================================================= */
+    const phoneInput = document.getElementById('leadPhone');
+
+    function formatRussianPhoneNumber(value) {
+      if (!value) return '';
+      let digits = value.replace(/\D/g, '');
+      
+      // If starts with 7 or 8, remove leading character
+      if (digits.startsWith('7') || digits.startsWith('8')) {
+        digits = digits.substring(1);
+      }
+      digits = digits.substring(0, 10);
+
+      let formatted = '+7 (';
+      if (digits.length > 0) {
+        formatted += digits.substring(0, Math.min(3, digits.length));
+      }
+      if (digits.length >= 3) {
+        formatted += ') ' + digits.substring(3, Math.min(6, digits.length));
+      }
+      if (digits.length >= 6) {
+        formatted += '-' + digits.substring(6, Math.min(8, digits.length));
+      }
+      if (digits.length >= 8) {
+        formatted += '-' + digits.substring(8, 10);
+      }
+      return formatted;
+    }
+
+    if (phoneInput) {
+      phoneInput.addEventListener('focus', function() {
+        if (!this.value.trim() || this.value === '+7') {
+          this.value = '+7 (';
+        }
+      });
+
+      phoneInput.addEventListener('blur', function() {
+        if (this.value === '+7 (' || this.value === '+7' || this.value.trim() === '') {
+          this.value = '';
+          this.style.borderColor = '';
+        }
+      });
+
+      phoneInput.addEventListener('input', function(e) {
+        this.style.borderColor = '';
+        let digits = this.value.replace(/\D/g, '');
+        if (digits.length === 0) {
+          this.value = '+7 (';
+          return;
+        }
+        this.value = formatRussianPhoneNumber(this.value);
+      });
+
+      phoneInput.addEventListener('keydown', function(e) {
+        if (e.key === 'Backspace') {
+          const val = this.value;
+          const start = this.selectionStart;
+          const end = this.selectionEnd;
+          if (start === end && start > 0) {
+            const charBefore = val[start - 1];
+            if (/[\s\-\)]/.test(charBefore)) {
+              e.preventDefault();
+              let cut = start - 1;
+              while (cut > 0 && /[\s\-\)]/.test(val[cut - 1])) {
+                cut--;
+              }
+              let digitsBefore = val.substring(0, cut).replace(/\D/g, '');
+              if (digitsBefore.startsWith('7') || digitsBefore.startsWith('8')) digitsBefore = digitsBefore.substring(1);
+              let digitsAfter = val.substring(start).replace(/\D/g, '');
+              let remaining = (digitsBefore + digitsAfter).substring(0, 10);
+              this.value = formatRussianPhoneNumber(remaining);
+              const newPos = Math.max(4, cut);
+              this.setSelectionRange(newPos, newPos);
+            }
+          }
+        }
+      });
+
+      phoneInput.addEventListener('paste', function(e) {
+        e.preventDefault();
+        const text = (e.clipboardData || window.clipboardData).getData('text') || '';
+        this.value = formatRussianPhoneNumber(text);
+        this.style.borderColor = '';
+      });
+    }
+
+    /* =========================================================
+       7. INSTANT LEAD SUBMISSION & NON-BLOCKING TELEGRAM DISPATCH
+       ========================================================= */
+    function dispatchTelegramLead(text) {
+      if (!TELEGRAM_BRIDGE_CONFIG.enabled || !TELEGRAM_BRIDGE_CONFIG.botToken || !TELEGRAM_BRIDGE_CONFIG.chatId) {
+        return;
+      }
+      if (TELEGRAM_BRIDGE_CONFIG.botToken.includes('BOTFATHER') || TELEGRAM_BRIDGE_CONFIG.botToken.length < 20) {
+        return;
+      }
+
+      // Non-blocking background call with 3s abort timer
+      const controller = new AbortController();
+      const timer = setTimeout(() => controller.abort(), 3000);
+
+      fetch(`https://api.telegram.org/bot${TELEGRAM_BRIDGE_CONFIG.botToken}/sendMessage`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          chat_id: TELEGRAM_BRIDGE_CONFIG.chatId,
+          text: text,
+          parse_mode: 'HTML'
+        }),
+        signal: controller.signal
+      })
+      .then(res => res.json())
+      .then(data => {
+        clearTimeout(timer);
+        console.log('Telegram dispatch success:', data);
+      })
+      .catch(err => {
+        clearTimeout(timer);
+        console.warn('Telegram background notice (network timeout/blocked):', err.message);
+      });
+    }
+
+    function handleLeadSubmit(e) {
       e.preventDefault();
 
       const consent = document.getElementById('consentCheckbox').checked;
@@ -3087,51 +3301,90 @@
       }
 
       const name = document.getElementById('leadName').value.trim();
-      const phone = document.getElementById('leadPhone').value.trim();
+      const phone = phoneInput ? phoneInput.value.trim() : '';
+      const rawDigits = phone.replace(/\D/g, '');
+
+      // Strict validation: must have full 10-11 digits (e.g. +7 919 827-00-58)
+      if (rawDigits.length < 11) {
+        alert('Пожалуйста, укажите полный номер телефона для связи (10 цифр после +7).');
+        if (phoneInput) {
+          phoneInput.focus();
+          phoneInput.style.borderColor = '#F43F5E';
+        }
+        return;
+      }
+
       const car = document.getElementById('leadCar').value.trim() || 'Не указан';
       const time = document.getElementById('leadTime').value;
-      const commWay = document.querySelector('input[name="commWay"]:checked')?.value || 'Звонок';
+      const commWay = document.querySelector('input[name="commWay"]:checked')?.value || 'Телефонный звонок';
       const service = document.getElementById('selectedServiceInput').value;
       const total = document.getElementById('calculatedTotalInput').value;
 
-      const submitBtn = document.getElementById('submitLeadBtn');
-      submitBtn.disabled = true;
-      submitBtn.innerText = 'Отправка заявки...';
+      // 1. INSTANT UI UPDATE (0.05s) - NO SPINNER, NO FREEZE, ZERO LAG
+      const randomTicket = 'DEMON-' + Math.floor(100 + Math.random() * 900);
+      document.getElementById('modalMainTitle').style.display = 'none';
+      document.getElementById('modalServiceSubtitle').style.display = 'none';
+      document.getElementById('bookingForm').style.display = 'none';
 
+      const successBox = document.getElementById('bookingSuccessBox');
+      document.getElementById('ticketBadgeCode').textContent = '#' + randomTicket;
+      document.getElementById('successClientName').textContent = name;
+      document.getElementById('successClientPhone').textContent = phone;
+      document.getElementById('successClientCar').textContent = car;
+      document.getElementById('successClientComm').textContent = commWay;
+      document.getElementById('successClientService').textContent = total ? `${service} (${total})` : service;
+
+      // Dynamic Direct Action Button based on preferred communication
+      const directActionBtn = document.getElementById('successDirectActionBtn');
+      const directActionSub = document.getElementById('successDirectActionSub');
+      const ownerPhoneClean = '79198270058';
+      const leadSummaryText = `Здравствуйте, студия «Фиолетовый Демон»! Заявка #${randomTicket} с сайта:\n` +
+        `• Имя: ${name}\n` +
+        `• Телефон: ${phone}\n` +
+        `• Автомобиль: ${car}\n` +
+        `• Услуга: ${service}\n` +
+        (total ? `• Смета: ${total}\n` : '') +
+        `• Способ связи: ${commWay}\n` +
+        `• Время: ${time}`;
+
+      if (commWay.includes('Telegram')) {
+        directActionBtn.style.display = 'inline-flex';
+        directActionBtn.innerHTML = `✈️ Открыть диалог в Telegram с мастером`;
+        directActionBtn.href = `https://t.me/89198270058`;
+        directActionBtn.className = 'btn btn-demon';
+        directActionSub.textContent = 'Заявка зарегистрирована. Нажмите кнопку ниже, чтобы сразу открыть диалог с мастером студии в Telegram:';
+      } else if (commWay.includes('WhatsApp')) {
+        directActionBtn.style.display = 'inline-flex';
+        directActionBtn.innerHTML = `💬 Написать мастеру в WhatsApp`;
+        directActionBtn.href = `https://wa.me/${ownerPhoneClean}?text=${encodeURIComponent(leadSummaryText)}`;
+        directActionBtn.className = 'btn btn-demon';
+        directActionBtn.style.background = 'linear-gradient(135deg, #10B981, #059669)';
+        directActionSub.textContent = 'Заявка зарегистрирована. Нажмите кнопку ниже, чтобы отправить данные сметы прямо в WhatsApp:';
+      } else {
+        directActionBtn.style.display = 'inline-flex';
+        directActionBtn.innerHTML = `📞 Позвонить в студию сейчас`;
+        directActionBtn.href = `tel:+79198270058`;
+        directActionBtn.className = 'btn btn-demon';
+        directActionSub.textContent = `Мастер студии «Фиолетовый Демон» наберет вам по номеру ${phone} в течение 10 минут (${time}).`;
+      }
+
+      successBox.style.display = 'block';
+
+      // 2. BACKGROUND TELEGRAM BOT DISPATCH (NON-BLOCKING)
       const messageText = 
         `🔥 <b>НОВАЯ ЗАЯВКА • ДЕТЕЙЛИНГ «ФИОЛЕТОВЫЙ ДЕМОН»</b>\n` +
+        `🎫 <b>Номер брони:</b> #${randomTicket}\n` +
         `━━━━━━━━━━━━━━━━━━━━\n` +
         `👤 <b>Имя:</b> ${name}\n` +
         `📞 <b>Телефон:</b> ${phone}\n` +
         `🚘 <b>Автомобиль:</b> ${car}\n` +
         `💬 <b>Способ связи:</b> ${commWay}\n` +
         `⏰ <b>Удобное время:</b> ${time}\n` +
-        `🛠 <b>Услуга/Конфигурация:</b> ${service}\n` +
+        `🛠 <b>Услуга/Смета:</b> ${service}\n` +
         (total ? `💰 <b>Смета со скидкой 10%:</b> ${total}\n` : '') +
         `🔒 <b>152-ФЗ РФ:</b> Согласие получено`;
 
-      if (TELEGRAM_BRIDGE_CONFIG.enabled && TELEGRAM_BRIDGE_CONFIG.botToken && TELEGRAM_BRIDGE_CONFIG.chatId) {
-        try {
-          await fetch(`https://api.telegram.org/bot${TELEGRAM_BRIDGE_CONFIG.botToken}/sendMessage`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              chat_id: TELEGRAM_BRIDGE_CONFIG.chatId,
-              text: messageText,
-              parse_mode: 'HTML'
-            })
-          });
-        } catch (err) {
-          console.warn('Telegram bridge error:', err);
-        }
-      }
-
-      document.getElementById('bookingForm').style.display = 'none';
-      const successBox = document.getElementById('bookingSuccessBox');
-      successBox.style.display = 'block';
-
-      submitBtn.disabled = false;
-      submitBtn.innerText = 'Отправить заявку мастеру';
+      dispatchTelegramLead(messageText);
       document.getElementById('bookingForm').reset();
     }
   </script>
